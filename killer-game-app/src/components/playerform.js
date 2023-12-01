@@ -4,7 +4,7 @@ import { collection, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { firestore, storage } from '../utils/firebase';
 
-function PlayerForm() {
+function PlayerForm({ onNewPlayerAdded }) {
     const [player, setPlayer] = useState({
         name: '',
         class: '',
@@ -23,6 +23,7 @@ function PlayerForm() {
                 const imageUrl = await getDownloadURL(snapshot.ref);
                 const docRef = await addDoc(collection(firestore, 'players'), { ...player, imageUrl });
                 resetForm();
+                onNewPlayerAdded(); // Call the callback to refetch players
             } catch (error) {
                 console.error('Error uploading image and writing document: ', error);
             }
@@ -31,6 +32,7 @@ function PlayerForm() {
                 const docRef = await addDoc(collection(firestore, 'players'), player);
                 console.log('Document successfully written with ID: ', docRef.id);
                 resetForm();
+                onNewPlayerAdded(); // Call the callback to refetch players
             } catch (error) {
                 console.error('Error writing document: ', error);
             }

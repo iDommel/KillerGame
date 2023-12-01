@@ -2,39 +2,25 @@ import React, { useState, useEffect } from 'react'
 import Profiles from './profiles';
 import { firestore } from '../utils/firebase';
 import { collection, getDocs } from 'firebase/firestore';
-
+import PlayerForm from './playerform';
 export default function Board() {
 
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [currentStatus, setCurrentStatus] = useState('any');
 
-  function addStatusAndScore(data) {
-    return data.map(item => ({
-        img: item.picture.medium,
-        class: "Warrior", // This is a placeholder for now
-        name: `${item.name.first} ${item.name.last}`,
-        status: Math.random() < 0.5 ? 'dead' : 'alive',
-        score: Math.floor(Math.random() * 11) // Random score between 0 and 10
-    }));
-}
+  const fetchData = async () => {
+      try {
+          const playersCol = collection(firestore, 'players');
+          const playerSnapshot = await getDocs(playersCol);
+          const playerList = playerSnapshot.docs.map(doc => doc.data());
+          setLeaderboardData(playerList)
+      } catch (error) {
+          console.error('Error fetching data:', error);
+      }
+  };
 
   useEffect(() => {
-      const fetchData = async () => {
-          try {
-              const response = await fetch('https://randomuser.me/api/?results=10&inc=gender,name,nat,picture'); // Replace with your API endpoint
-              const data = await response.json();
-              const updatedData = addStatusAndScore(data.results);
 
-              const playersCol = collection(firestore, 'players');
-              const playerSnapshot = await getDocs(playersCol);
-              const playerList = playerSnapshot.docs.map(doc => doc.data());
-              console.log("playerList", playerList);
-              console.log("updatedData", updatedData);
-              setLeaderboardData(playerList)
-          } catch (error) {
-              console.error('Error fetching data:', error);
-          }
-      };
 
       fetchData();
   }, []); // Empty dependency array to run once on mount
@@ -45,8 +31,9 @@ export default function Board() {
 
   return (
     <div className="board">
-        <h1 className='leaderboard'>Leaderboard</h1>
 
+        <h1 className='leaderboard'>Leaderboard</h1>
+        <PlayerForm onNewPlayerAdded={fetchData}/>
         <div className="status">
             <button onClick={handleClick} data-id='any'>Any</button>
             <button onClick={handleClick} data-id='alive'>Alive</button>
