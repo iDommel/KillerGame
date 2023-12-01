@@ -15,11 +15,12 @@ const item = (data) => {
                 data.map((value, index) => (
                     <div className="flex" key={index}>
                         <div className="item">
-                            <img src={value.picture.medium} alt="" />
+                            <img src={value.imageUrl} alt="" />
 
                             <div className="info">
-                                <h3 className='name text-dark'>{`${value.name.first} ${value.name.last}`}</h3>
-                                <span>{value.status}</span>
+                                <h3 className='name text-dark'>{value.name}</h3>
+                                <h4>{value.status}</h4>
+                                <span>{value.class}</span>
                             </div>
                         </div>
                         <div className="item">

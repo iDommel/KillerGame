@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Profiles from './profiles';
+import { firestore } from '../utils/firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 export default function Board() {
 
@@ -8,7 +10,9 @@ export default function Board() {
 
   function addStatusAndScore(data) {
     return data.map(item => ({
-        ...item,
+        img: item.picture.medium,
+        class: "Warrior", // This is a placeholder for now
+        name: `${item.name.first} ${item.name.last}`,
         status: Math.random() < 0.5 ? 'dead' : 'alive',
         score: Math.floor(Math.random() * 11) // Random score between 0 and 10
     }));
@@ -20,7 +24,13 @@ export default function Board() {
               const response = await fetch('https://randomuser.me/api/?results=10&inc=gender,name,nat,picture'); // Replace with your API endpoint
               const data = await response.json();
               const updatedData = addStatusAndScore(data.results);
-              setLeaderboardData(updatedData);
+
+              const playersCol = collection(firestore, 'players');
+              const playerSnapshot = await getDocs(playersCol);
+              const playerList = playerSnapshot.docs.map(doc => doc.data());
+              console.log("playerList", playerList);
+              console.log("updatedData", updatedData);
+              setLeaderboardData(playerList)
           } catch (error) {
               console.error('Error fetching data:', error);
           }
@@ -28,7 +38,7 @@ export default function Board() {
 
       fetchData();
   }, []); // Empty dependency array to run once on mount
-
+  console.log("leaderboardData", leaderboardData);
   const handleClick = (e) => {
     setCurrentStatus(e.target.dataset.id)
   }
