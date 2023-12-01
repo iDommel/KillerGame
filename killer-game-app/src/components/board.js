@@ -4,11 +4,11 @@ import { Leaderboard } from './database';
 
 export default function Board() {
 
-    const [period, setPeriod] = useState(0);
+  const [currentStatus, setCurrentStatus] = useState("any");
 
   const handleClick = (e) => {
 
-    setPeriod(e.target.dataset.id)
+    setCurrentStatus(e.target.dataset.id)
   }
 
   return (
@@ -21,19 +21,23 @@ export default function Board() {
             <button onClick={handleClick} data-id='dead'>Dead</button>
         </div>
 
-        <Profiles Leaderboard={filterStatus(Leaderboard, period)}></Profiles>
-
+        <div className="scroll-container">
+          <Profiles Leaderboard={filterStatus(Leaderboard, currentStatus)}></Profiles>
+        </div>
     </div>
   )
 }
 
 // function to filter the data based on status
-const filterStatus = (data, period) => {
-    if (period === "any") {
-        return data;
+const filterStatus = (data, currentStatus) => {
+    const sortedData = data.sort((a, b) => {
+        return b.score - a.score;
+    })
+    if (currentStatus === "any") {
+        return sortedData;
     }
     else {
-        return data.filter((value) => value.status === period)
+        return sortedData.filter((value) => value.status === currentStatus)
     }
 }
 
