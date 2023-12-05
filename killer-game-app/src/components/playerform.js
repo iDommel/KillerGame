@@ -77,13 +77,16 @@ function PlayerForm({ onNewPlayerAdded }) {
                 onChange={handleChange}
                 placeholder="Score"
             />
-            <input
-                type="text"
+            <select
                 name="status"
                 value={player.status}
                 onChange={handleChange}
-                placeholder="Status"
-            />
+                required
+            >
+                <option value="">Select Status</option>
+                <option value="Alive">Alive</option>
+                <option value="Dead">Dead</option>
+            </select>
             <input
                 type="file"
                 onChange={handleImageChange}

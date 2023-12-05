@@ -77,13 +77,18 @@
 
 @media screen and (max-width: 600px) {
     #profile .flex img {
-        width: 30%; /* Adjust as needed */
+        width: 60px; /* Smaller size for smaller screens */
+        height: 60px; /* Maintain square shape */
+        /* object-fit and object-position remain the same */
     }
 }
 
 #profile .flex img{
-    width: 20%;
-    border-radius: 50%;
+    width: 80px; /* Fixed width */
+    height: 80px; /* Fixed height, equal to width for square */
+    border-radius: 50%; /* Circular shape */
+    object-fit: cover; /* Ensures the image covers the area, maintaining its aspect ratio */
+    object-position: center; /* Centers the image within the element */
 }
 
 #profile .flex .info{
